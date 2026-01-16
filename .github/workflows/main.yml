@@ -1,0 +1,41 @@
+name: Java Report for BankApplication
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # Allows you to run this manually if needed
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out your code so the runner can see it
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 20
+        uses: actions/setup-java@v4
+        with:
+          java-version: '20'   # <--- Update this line to 20 (or 21)
+          distribution: 'temurin'
+          cache: 'maven'
+
+      # 2. Check for forbidden .class files (Fail if found)
+      - name: run tests
+        run: mvn clean test
+
+      - name: run jacoco
+        run: mvn jacoco:report
+
+      - name: run package
+        run: mvn package
+
+      - name: Download target
+        uses: actions/upload-artifact@v4
+        with: 
+          name: target
+          path: target/
+          if-no-files-found: error
