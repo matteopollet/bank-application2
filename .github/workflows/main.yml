@@ -16,6 +16,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up JDK 20
+        uses: actions/setup-java@v4
+        with:
+          java-version: '20'   # <--- Update this line to 20 (or 21)
+          distribution: 'temurin'
+          cache: 'maven'
+
       # 2. Check for forbidden .class files (Fail if found)
       - name: run tests
         run: mvn clean test
